@@ -90,11 +90,15 @@ class NemoparseOutput(ModelOutput):
         
     def save_output(self, output_directory, filename_base, save_images=False,
                     save_bbox_data=False, save_tables=False, save_page_numbers=False):
-        img_index = 0
+        global_img_index = 0
         img_filenames = []
-        for image_list in self.images:
-            for img in image_list:
-                img_filename = f"{filename_base}_image_{img_index}.png"
+        for page_idx, image_list in enumerate(self.images):
+            for img_index, img in enumerate(image_list):
+                if save_page_numbers:
+                    page_number = self._page_number_at(page_idx)
+                    img_filename = f"{filename_base}_page_{page_number}_image_{img_index}.png"
+                else:
+                    img_filename = f"{filename_base}_image_{global_img_index}.png"
                 if save_images:
                     try:
                         img.save(os.path.join(output_directory, img_filename))
@@ -112,13 +116,18 @@ class NemoparseOutput(ModelOutput):
                 f.write("\n")
 
             for index, bbox_image in enumerate(self.bbox_image):
-                bbox_image.save(os.path.join(output_directory, f"{filename_base}_bbox_image_{index}.png"))
+                page_number = self._page_number_at(index)
+                bbox_image.save(os.path.join(output_directory, f"{filename_base}_bbox_outlines_page_{page_number}.png"))
 
         if save_tables:
             table_index = 0
-            for table_list in self.tables:
-                for table in table_list:
-                    table_name = f"{filename_base}_table_{table_index}.csv"
+            for page_idx, table_list in enumerate(self.tables):
+                for table_number, table in enumerate(table_list):
+                    if save_page_numbers:
+                        page_number = self._page_number_at(page_idx)
+                        table_name = f"{filename_base}_page_{page_number}_table_{table_number}.csv"
+                    else:
+                        table_name = f"{filename_base}_table_{table_index}.csv"
                     converted_table = convert_latex_table_to_csv(table)
 
                     with open(os.path.join(output_directory, table_name), 'w') as csv_file:

@@ -300,6 +300,10 @@ class TestBanyanExtractProcessingSingleFile:
         test_pdf = Path("tests/data/docs/sample.pdf")
         output_dir = tmp_path / "output"
 
+        os.environ.pop("NEMOPARSE_ENDPOINT", None)
+        os.environ.pop("NEMOPARSE_MODEL", None)
+        os.environ.pop("NEMOPARSE_MODEL_VERSION", None)
+
         extractor = BanyanExtract(
             input_file=str(test_pdf),
             output_dir=str(output_dir),
