@@ -1,4 +1,4 @@
-### PR #TBD - 2026-11-23
+### PR #3 - 2026-11-23
 - Support authenticated Nemotron 3.5 Parse document endpoints alongside existing chat-compatible deployments.
 - Keep the default image filenames distinct when exporting multiple extracted images.
 
